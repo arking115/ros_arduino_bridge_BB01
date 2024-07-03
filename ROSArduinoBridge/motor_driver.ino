@@ -55,6 +55,31 @@
     setMotorSpeed(LEFT, leftSpeed);
     setMotorSpeed(RIGHT, rightSpeed);
   }
+#elif defined POLULU_G2_18V18
+  #include <Motoron.h>
+  MotoronI2C mc;
+  void initMotorController(){
+    Wire.begin();
+    mc.reinitialize();
+    mc.clearResetFlag();
+
+    mc.setMaxAcceleration(1, 200);
+    mc.setMaxDeceleration(1, 300);
+
+    mc.setMaxAcceleration(2, 200);
+    mc.setMaxDeceleration(2, 300);
+  }
+
+  void setMotorSpeed(int i, int spd){
+    if (i == LEFT) mc.setSpeed(1, spd);
+    else mc.setSpeed(2, spd);
+  }
+
+  void setMotorSpeeds(int leftSpeed, int rightSpeed) {
+    mc.setSpeed(LEFT, leftSpeed);
+    mc.setSpeed(RIGHT, leftSpeed);
+  }
+  
 #elif defined L298_MOTOR_DRIVER
   void initMotorController() {
     digitalWrite(RIGHT_MOTOR_ENABLE, HIGH);
