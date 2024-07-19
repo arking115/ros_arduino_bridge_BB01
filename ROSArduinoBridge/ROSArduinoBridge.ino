@@ -115,8 +115,8 @@
 
   /* Stop the robot if it hasn't received a movement command
    in this number of milliseconds */
-  #define AUTO_STOP_INTERVAL 2000
-  long lastMotorCommand = AUTO_STOP_INTERVAL;
+  // #define AUTO_STOP_INTERVAL 2000
+  // long lastMotorCommand = AUTO_STOP_INTERVAL;
 #endif
 
 /* Variable initialization */
@@ -209,7 +209,7 @@ int runCommand() {
     break;
   case MOTOR_SPEEDS:
     /* Reset the auto stop timer */
-    lastMotorCommand = millis();
+    // lastMotorCommand = millis();
     if (arg1 == 0 && arg2 == 0) {
       setMotorSpeeds(0, 0);
       resetPID();
@@ -222,10 +222,11 @@ int runCommand() {
     break;
   case MOTOR_RAW_PWM:
     /* Reset the auto stop timer */
-    lastMotorCommand = millis();
-    resetPID();
-    moving = 0; // Sneaky way to temporarily disable the PID
-    setMotorSpeeds(arg1, arg2);
+    // lastMotorCommand = millis();
+    // Map PWM values to motor speed range (-800 to 800)
+    int leftSpeed = map(arg1, -255, 255, -800, 800);
+    int rightSpeed = map(arg2, -255, 255, -800, 800);
+    setMotorSpeeds(leftSpeed, rightSpeed);
     Serial.println("OK"); 
     break;
   case UPDATE_PID:
@@ -295,7 +296,6 @@ void setup() {
 */
 void loop() {
   while (Serial.available() > 0) {
-    
     // Read the next character
     chr = Serial.read();
 
@@ -342,10 +342,10 @@ void loop() {
   }
   
   // Check to see if we have exceeded the auto-stop interval
-  if ((millis() - lastMotorCommand) > AUTO_STOP_INTERVAL) {;
-    setMotorSpeeds(0, 0);
-    moving = 0;
-  }
+  // if ((millis() - lastMotorCommand) > AUTO_STOP_INTERVAL) {;
+  //   setMotorSpeeds(0, 0);
+  //   moving = 0;
+  // }
 #endif
 
 // Sweep servos

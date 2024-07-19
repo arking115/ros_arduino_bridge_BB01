@@ -62,12 +62,13 @@
     Wire.begin();
     mc.reinitialize();
     mc.clearResetFlag();
+    mc.disableCommandTimeout();
 
-    mc.setMaxAcceleration(1, 200);
-    mc.setMaxDeceleration(1, 300);
+    mc.setMaxAcceleration(1, 800);
+    mc.setMaxDeceleration(1, 800);
 
-    mc.setMaxAcceleration(2, 200);
-    mc.setMaxDeceleration(2, 300);
+    mc.setMaxAcceleration(2, 800);
+    mc.setMaxDeceleration(2, 800);
   }
 
   void setMotorSpeed(int i, int spd){
@@ -76,10 +77,19 @@
   }
 
   void setMotorSpeeds(int leftSpeed, int rightSpeed) {
-    mc.setSpeed(LEFT, leftSpeed);
-    mc.setSpeed(RIGHT, leftSpeed);
+    mc.setSpeed(1, leftSpeed);
+    mc.setSpeed(2, rightSpeed);
   }
   
+  void testMotors() {
+    mc.setSpeed(1, 200); // Set motor 1 to speed 200
+    mc.setSpeed(2, 200); // Set motor 2 to speed 200
+    delay(2000); // Run for 2 seconds
+    mc.setSpeed(1, 0); // Stop motor 1
+    mc.setSpeed(2, 0); // Stop motor 2
+    delay(2000);
+  }
+
 #elif defined L298_MOTOR_DRIVER
   void initMotorController() {
     digitalWrite(RIGHT_MOTOR_ENABLE, HIGH);
