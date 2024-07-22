@@ -60,7 +60,8 @@
    //#define ROBOGAIA
    
    /* Encoders directly attached to Arduino board */
-   #define ARDUINO_ENC_COUNTER
+   // #define ARDUINO_ENC_COUNTER
+   #define ARDUINO_MEGA_ENC_COUNTER
 
   #define POLULU_G2_18V18
    /* L298 Motor driver*/
@@ -273,6 +274,21 @@ void setup() {
     
     // enable PCINT1 and PCINT2 interrupt in the general interrupt mask
     PCICR |= (1 << PCIE1) | (1 << PCIE2);
+  #elif defined(ARDUINO_MEGA_ENC_COUNTER)
+    DDRD &= ~(1 << PD3); // Pin 18
+    DDRD &= ~(1 << PD2); // Pin 19
+    DDRE &= ~(1 << PE4); // Pin 2
+    DDRE &= ~(1 << PE5); // Pin 3
+
+    PORTD |= (1 << PD3); // Pin 18
+    PORTD |= (1 << PD2); // Pin 19
+    PORTE |= (1 << PE4); // Pin 2
+    PORTE |= (1 << PE5); // Pin 3
+
+    attachInterrupt(digitalPinToInterrupt(LEFT_ENC_A), leftEncISR, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(LEFT_ENC_B), leftEncISR, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(RIGHT_ENC_A), rightEncISR, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(RIGHT_ENC_B), rightEncISR, CHANGE);
   #endif
   initMotorController();
   resetPID();

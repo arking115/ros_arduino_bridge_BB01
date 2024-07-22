@@ -68,6 +68,36 @@
       return;
     }
   }
+#elif defined(ARDUINO_MEGA_ENC_COUNTER)
+
+  volatile long left_enc_pos = 0L;
+  volatile long right_enc_pos = 0L;
+
+  static const int8_t ENC_STATES[] = {0, 1, -1, 0, -1, 0, 0, 1, 1, 0, 0, -1, 0, -1, 1, 0};
+
+  void leftEncISR() {
+    static uint8_t enc_last = 0;
+    uint8_t enc_state = ((PIND & (1 << PIND3)) >> 2) | ((PIND & (1 << PIND2)) >> 2);
+    enc_last = (enc_last << 2) | enc_state;
+    left_enc_pos += ENC_STATES[(enc_last & 0x0F)];
+  }
+
+  void rightEncISR() {
+    static uint8_t enc_last = 0;
+    uint8_t enc_state = ((PINE & (1 << PINE4)) >> 4) | ((PINE & (1 << PINE5)) >> 4);
+    enc_last = (enc_last << 2) | enc_state;
+    right_enc_pos += ENC_STATES[(enc_last & 0x0F)];
+  }
+
+  long readEncoder(int i) {
+    if (i == LEFT) return left_enc_pos;
+    else return -right_enc_pos;
+  }
+
+  void resetEncoder(int i) {
+    if (i == LEFT) left_enc_pos = 0L;
+    else right_enc_pos = 0L;
+  }
 #else
   #error A encoder driver must be selected!
 #endif
