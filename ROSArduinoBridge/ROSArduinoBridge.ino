@@ -106,7 +106,7 @@
   #include "diff_controller.h"
 
   /* Run the PID loop at 30 times per second */
-  #define PID_RATE           30     // Hz
+  #define PID_RATE           60     // Hz
 
   /* Convert the rate into an interval */
   const int PID_INTERVAL = 1000 / PID_RATE;
@@ -159,6 +159,8 @@ int runCommand() {
   int pid_args[4];
   arg1 = atoi(argv1);
   arg2 = atoi(argv2);
+  int leftSpeed = map(arg1, -255, 255, -800, 800);
+  int rightSpeed = map(arg2, -255, 255, -800, 800);
   
   switch(cmd) {
   case GET_BAUDRATE:
@@ -211,22 +213,20 @@ int runCommand() {
   case MOTOR_SPEEDS:
     /* Reset the auto stop timer */
     // lastMotorCommand = millis();
-    if (arg1 == 0 && arg2 == 0) {
+    if (leftSpeed == 0 && rightSpeed == 0) {
       setMotorSpeeds(0, 0);
       resetPID();
       moving = 0;
     }
     else moving = 1;
-    leftPID.TargetTicksPerFrame = arg1;
-    rightPID.TargetTicksPerFrame = arg2;
+    leftPID.TargetTicksPerFrame = leftSpeed;
+    rightPID.TargetTicksPerFrame = rightSpeed;
     Serial.println("OK"); 
     break;
   case MOTOR_RAW_PWM:
     /* Reset the auto stop timer */
     // lastMotorCommand = millis();
     // Map PWM values to motor speed range (-800 to 800)
-    int leftSpeed = map(arg1, -255, 255, -800, 800);
-    int rightSpeed = map(arg2, -255, 255, -800, 800);
     setMotorSpeeds(leftSpeed, rightSpeed);
     Serial.println("OK"); 
     break;

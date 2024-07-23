@@ -72,13 +72,13 @@
   }
 
   void setMotorSpeed(int i, int spd){
-    if (i == LEFT) mc.setSpeed(1, spd);
-    else mc.setSpeed(2, spd);
+    if (i == LEFT) mc.setSpeed(2, spd);
+    else mc.setSpeed(1, spd);
   }
 
   void setMotorSpeeds(int leftSpeed, int rightSpeed) {
-    mc.setSpeed(1, leftSpeed);
-    mc.setSpeed(2, rightSpeed);
+    mc.setSpeed(2, leftSpeed);
+    mc.setSpeed(1, rightSpeed);
   }
   
   void testMotors() {
