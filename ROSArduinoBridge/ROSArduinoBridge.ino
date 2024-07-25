@@ -75,7 +75,7 @@
 #define BAUDRATE     57600
 
 /* Maximum PWM signal */
-#define MAX_PWM        255
+#define MAX_PWM        800
 
 #if defined(ARDUINO) && ARDUINO >= 100
 #include "Arduino.h"
@@ -106,7 +106,7 @@
   #include "diff_controller.h"
 
   /* Run the PID loop at 30 times per second */
-  #define PID_RATE           60     // Hz
+  #define PID_RATE           30     // Hz
 
   /* Convert the rate into an interval */
   const int PID_INTERVAL = 1000 / PID_RATE;
@@ -213,14 +213,14 @@ int runCommand() {
   case MOTOR_SPEEDS:
     /* Reset the auto stop timer */
     // lastMotorCommand = millis();
-    if (leftSpeed == 0 && rightSpeed == 0) {
+    if (arg1 == 0 && arg2 == 0) {
       setMotorSpeeds(0, 0);
       resetPID();
       moving = 0;
     }
     else moving = 1;
-    leftPID.TargetTicksPerFrame = leftSpeed;
-    rightPID.TargetTicksPerFrame = rightSpeed;
+    leftPID.TargetTicksPerFrame = arg1;
+    rightPID.TargetTicksPerFrame = arg2;
     Serial.println("OK"); 
     break;
   case MOTOR_RAW_PWM:

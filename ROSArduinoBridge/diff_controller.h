@@ -33,7 +33,7 @@ SetPointInfo;
 SetPointInfo leftPID, rightPID;
 
 /* PID Parameters */
-int Kp = 30;
+int Kp = 20;
 int Kd = 12;
 int Ki = 0;
 int Ko = 50;
@@ -123,6 +123,7 @@ void updatePID() {
   /* Compute PID update for each motor */
   doPID(&rightPID);
   doPID(&leftPID);
+  Serial.println(leftPID.output);
 
   /* Set the motor speeds accordingly */
   setMotorSpeeds(leftPID.output, rightPID.output);
